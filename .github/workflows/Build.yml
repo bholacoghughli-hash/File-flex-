@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Extract ZIP and Prepare Environment
+      - name: Extract ZIP and Prepare Files
         run: |
           unzip -o fileflex.zip -d ./
           cp -n .env.example .env || touch .env
@@ -24,13 +24,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Download Gradlew Script Directly
-        run: |
-          curl -s -o gradlew https://raw.githubusercontent.com/gradle/gradle/v8.11.1/gradlew
-          chmod +x gradlew
+      - name: Setup Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.3.1'
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace -x test -x lint
+        run: gradle assembleDebug --stacktrace -x test -x lint
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
